@@ -1,10 +1,12 @@
 name: Aktualizuj README z plikami CPP
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main, master ]
     paths:
       - '**.cpp'
+      - '.github/workflows/**'
 
 jobs:
   update-readme:
@@ -21,7 +23,7 @@ jobs:
         run: |
           echo "# Podstawy Programowania i ogólnego kodowania – lobodagpolsl" > README.md
           echo "" >> README.md
-          echo "lista plików źródłowych C++:" >> README.md
+          echo "Lista plików źródłowych C++:" >> README.md
           echo "" >> README.md
           echo "| Data ostatniej zmiany | Ścieżka do pliku (.cpp) |" >> README.md
           echo "| :--- | :--- |" >> README.md
@@ -29,11 +31,12 @@ jobs:
           for file in $(find . -name "*.cpp" | sort); do
             clean_path=${file#./}
             date=$(git log -1 --format="%cd" --date=format:"%d.%m.%Y %H:%M" -- "$file")
-            echo "|  $date | [ $clean_path](./$clean_path) |" >> README.md
-
-
-          echo "$date Gabriel Łoboda" >> README.md
+            echo "| $date | [$clean_path](./$clean_path) |" >> README.md
           done
+
+          echo "" >> README.md
+          echo "---" >> README.md
+          echo "Ostatnia aktualizacja: $(date +'%d.%m.%Y %H:%M') | **Gabriel Łoboda**" >> README.md
 
       - name: Zapisz i wypchnij zmiany
         run: |
